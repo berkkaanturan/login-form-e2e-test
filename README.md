@@ -1,12 +1,35 @@
-# React + Vite
+# Login Formu E2E Test Projesi
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bu proje, bir React tabanlı basit giriş formu uygulamasının uçtan uca (End-to-End) testlerini Cypress kullanarak göstermektedir.
 
-Currently, two official plugins are available:
+## Özellikler
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* Basit e-posta ve şifre giriş alanları.
+* "Şartları kabul ediyorum" onay kutusu.
+* E-posta validasyonu (geçerli format).
+* Şifre validasyonu (en az 6 karakter).
+* Form validasyonları geçilene kadar aktif olmayan "Giriş Yap" butonu.
+* Başarılı giriş sonrası yönlendirilen "Success" sayfası.
+* Cypress ile yazılmış başarılı ve hatalı senaryo testleri.
 
-## Expanding the ESLint configuration
+## Kurulum
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1.  Depoyu klonlayın:
+    ```bash
+    git clone [https://github.com/berkkaanturan/login-form-e2e-test.git](https://github.com/berkkaanturan/login-form-e2e-test.git)
+    ```
+2.  Proje dizinine gidin:
+    ```bash
+    cd login-form-e2e-test
+    ```
+3.  Bağımlılıkları yükleyin:
+    ```bash
+    npm install
+    ```
+
+## Uygulamayı Çalıştırma
+
+Uygulamayı geliştirme modunda başlatmak için:
+
+```bash
+npm run dev

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+  import React, { useState } from 'react';
 
 function Login() {
   // Durum değişkenleri: Form alanlarının değerlerini tutarız
@@ -11,12 +11,14 @@ function Login() {
   const [passwordError, setPasswordError] = useState('');
   const [termsError, setTermsError] = useState('');
 
-  // Email validasyonu (sadece boş olmamasını ve @ içermesini kontrol edelim)
+  // Email validasyonu (daha doğru bir regex ile)
   const isValidEmail = (email) => {
     if (!email) {
       return false; // Boş olamaz
     }
-    return email.includes('@'); // @ işareti içermeli
+    // Basit bir e-posta formatı regex'i:
+    // Başında ve sonunda boşluk olmayan karakterler, @ işareti, tekrar boşluk olmayan karakterler, nokta, tekrar boşluk olmayan karakterler.
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   // Şifre validasyonu (en az 6 karakter olmasını kontrol edelim)
@@ -28,6 +30,7 @@ function Login() {
   };
 
   // Formun genel geçerlilik durumu
+  // Bu değer her renderda yeniden hesaplanır
   const isFormValid =
     isValidEmail(email) &&
     isStrongPassword(password) &&
@@ -37,16 +40,16 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault(); // Sayfanın yenilenmesini engeller
 
-    // Hata mesajlarını sıfırla
+    // Her gönderimde hata mesajlarını sıfırla ki güncel validasyon durumunu görelim
     setEmailError('');
     setPasswordError('');
     setTermsError('');
 
-    let valid = true;
+    let valid = true; // Genel geçerlilik durumu kontrolü
 
     // Email kontrolü
     if (!isValidEmail(email)) {
-      setEmailError('Lütfen geçerli bir e-posta adresi girin. (@ içermeli)');
+      setEmailError('Lütfen geçerli bir e-posta adresi girin. (@ ve . içermeli)');
       valid = false;
     }
 
@@ -78,7 +81,24 @@ function Login() {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            // Input değeri değiştiğinde state'i güncelle ve validasyonu tetikle
+            onChange={(e) => {
+              setEmail(e.target.value);
+              // Anında validasyon geri bildirimi için
+              if (e.target.value && !isValidEmail(e.target.value)) {
+                setEmailError('Lütfen geçerli bir e-posta adresi girin. (@ ve . içermeli)');
+              } else {
+                setEmailError('');
+              }
+            }}
+            // Input alanı odağı kaybettiğinde de validasyonu kontrol et (Cypress için de faydalı)
+            onBlur={() => {
+              if (email && !isValidEmail(email)) {
+                setEmailError('Lütfen geçerli bir e-posta adresi girin. (@ ve . içermeli)');
+              } else {
+                setEmailError('');
+              }
+            }}
             style={{ width: '100%', padding: '8px', boxSizing: 'border-box', borderRadius: '4px', border: '1px solid #ddd' }}
           />
           {emailError && <p style={{ color: 'red', fontSize: '0.9em', marginTop: '5px' }}>{emailError}</p>}
@@ -89,7 +109,24 @@ function Login() {
             type="password"
             id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            // Input değeri değiştiğinde state'i güncelle ve validasyonu tetikle
+            onChange={(e) => {
+              setPassword(e.target.value);
+              // Anında validasyon geri bildirimi için
+              if (e.target.value && !isStrongPassword(e.target.value)) {
+                setPasswordError('Şifre en az 6 karakter olmalıdır.');
+              } else {
+                setPasswordError('');
+              }
+            }}
+            // Input alanı odağı kaybettiğinde de validasyonu kontrol et
+            onBlur={() => {
+              if (password && !isStrongPassword(password)) {
+                setPasswordError('Şifre en az 6 karakter olmalıdır.');
+              } else {
+                setPasswordError('');
+              }
+            }}
             style={{ width: '100%', padding: '8px', boxSizing: 'border-box', borderRadius: '4px', border: '1px solid #ddd' }}
           />
           {passwordError && <p style={{ color: 'red', fontSize: '0.9em', marginTop: '5px' }}>{passwordError}</p>}
@@ -99,7 +136,15 @@ function Login() {
             type="checkbox"
             id="terms"
             checked={termsAccepted}
-            onChange={(e) => setTermsAccepted(e.target.checked)}
+            onChange={(e) => {
+              setTermsAccepted(e.target.checked);
+              // Anında validasyon geri bildirimi için
+              if (!e.target.checked) {
+                setTermsError('Devam etmek için şartları kabul etmelisiniz.');
+              } else {
+                setTermsError('');
+              }
+            }}
             style={{ marginRight: '10px' }}
           />
           <label htmlFor="terms">Şartları kabul ediyorum</label>
